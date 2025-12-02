@@ -3,16 +3,13 @@ import EnrollmentsDao from "./dao.js";
 
 
 export default function EnrollmentsRoutes(app, db) {
-  // db is no longer needed, but passing it doesn't hurt
   const dao = EnrollmentsDao(db);
 
-  // GET /api/enrollments
   const findAllEnrollments = async (req, res) => {
     const enrollments = await dao.findAllEnrollments();
     res.json(enrollments);
   };
 
-  // POST /api/enrollments
   const enrollInCourse = async (req, res) => {
     const { user, course } = req.body;
 
@@ -30,7 +27,6 @@ export default function EnrollmentsRoutes(app, db) {
     res.json(users);
   };
 
-  // DELETE /api/enrollments/:enrollmentId
   const unenrollFromCourse = async (req, res) => {
     const { enrollmentId } = req.params;
     await dao.unenrollUser(enrollmentId);
