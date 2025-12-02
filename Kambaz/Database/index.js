@@ -4,4 +4,4 @@ import users from "./users.js";
 import enrollments from "./enrollments.js";
 import assignments from "./assignments.js";
 
-export default { courses, modules, users, enrollments, assignments };
+export default {};

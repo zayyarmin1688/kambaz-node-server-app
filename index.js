@@ -4,11 +4,12 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import session from "express-session";
+import mongoose from "mongoose";    
 
 import Hello from "./Hello.js";
 import Lab5 from "./Lab5/index.js";
 
-import db from "./Kambaz/Database/index.js";
+// import db from "./Kambaz/Database/index.js";
 import UserRoutes from "./Kambaz/Users/routes.js";
 import CourseRoutes from "./Kambaz/Courses/routes.js";
 import ModulesRoutes from "./Kambaz/Modules/routes.js";
@@ -16,13 +17,12 @@ import AssignmentsRoutes from "./Kambaz/Assignments/routes.js";
 import EnrollmentsRoutes from "./Kambaz/Enrollments/routes.js";
 
 const app = express();
-
 app.set("trust proxy", 1);
 
-
+// CORS
 const allowedOrigins = [
-  process.env.CLIENT_URL, 
-  "http://localhost:3000", 
+  process.env.CLIENT_URL,
+  "http://localhost:3000",
 ].filter(Boolean);
 
 app.use(
@@ -37,6 +37,7 @@ app.use(
   })
 );
 
+// Session
 const isProd = process.env.SERVER_ENV !== "development";
 
 const sessionOptions = {
@@ -51,19 +52,29 @@ const sessionOptions = {
 };
 
 app.use(session(sessionOptions));
-
-
 app.use(express.json());
 
+const CONNECTION_STRING = process.env.DATABASE_CONNECTION_STRING;
+
+mongoose
+  .connect(CONNECTION_STRING)
+  .then(() => {
+    console.log("Connected to MongoDB");
+
+    const port = process.env.PORT || 4000;
+    app.listen(port, () =>
+      console.log(`Server running on port ${port}`)
+    );
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
 Hello(app);
 Lab5(app);
 
-UserRoutes(app, db);
-CourseRoutes(app, db);
-ModulesRoutes(app, db);
-AssignmentsRoutes(app, db);
-EnrollmentsRoutes(app, db);
-
-const port = process.env.PORT || 4000;
-app.listen(port);
+UserRoutes(app);
+CourseRoutes(app);
+ModulesRoutes(app);
+AssignmentsRoutes(app);
+EnrollmentsRoutes(app); 

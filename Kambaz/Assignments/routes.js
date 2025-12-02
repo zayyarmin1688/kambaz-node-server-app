@@ -4,15 +4,15 @@ import AssignmentsDao from "./dao.js";
 export default function AssignmentsRoutes(app, db) {
   const dao = AssignmentsDao(db);
 
-  const findAssignmentsForCourse = (req, res) => {
+  const findAssignmentsForCourse = async (req, res) => {
     const { courseId } = req.params;
-    const assignments = dao.findAssignmentsForCourse(courseId);
+    const assignments = await dao.findAssignmentsForCourse(courseId);
     res.json(assignments);
   };
 
-  const findAssignmentById = (req, res) => {
+  const findAssignmentById = async (req, res) => {
     const { assignmentId } = req.params;
-    const assignment = dao.findAssignmentById(assignmentId);
+    const assignment = await dao.findAssignmentById(assignmentId);
     if (!assignment) {
       res.sendStatus(404);
       return;
@@ -20,25 +20,26 @@ export default function AssignmentsRoutes(app, db) {
     res.json(assignment);
   };
 
-  const createAssignmentForCourse = (req, res) => {
+  const createAssignmentForCourse = async (req, res) => {
     const { courseId } = req.params;
-    const newAssignment = dao.createAssignment(courseId, req.body);
+    const newAssignment = await dao.createAssignment(courseId, req.body);
     res.json(newAssignment);
   };
 
-  const updateAssignmentById = (req, res) => {
+  const updateAssignmentById = async (req, res) => {
     const { assignmentId } = req.params;
-    const updated = dao.updateAssignment(assignmentId, req.body);
-    if (!updated) {
+    const result = await dao.updateAssignment(assignmentId, req.body);
+
+    if (!result || result.matchedCount === 0) {
       res.sendStatus(404);
       return;
     }
     res.sendStatus(204);
   };
 
-  const deleteAssignmentById = (req, res) => {
+  const deleteAssignmentById = async (req, res) => {
     const { assignmentId } = req.params;
-    dao.deleteAssignment(assignmentId);
+    await dao.deleteAssignment(assignmentId);
     res.sendStatus(204);
   };
 
@@ -48,3 +49,5 @@ export default function AssignmentsRoutes(app, db) {
   app.put("/api/assignments/:assignmentId", updateAssignmentById);
   app.delete("/api/assignments/:assignmentId", deleteAssignmentById);
 }
+
+
