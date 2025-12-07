@@ -9,17 +9,16 @@ import mongoose from "mongoose";
 import Hello from "./Hello.js";
 import Lab5 from "./Lab5/index.js";
 
-// import db from "./Kambaz/Database/index.js";
 import UserRoutes from "./Kambaz/Users/routes.js";
 import CourseRoutes from "./Kambaz/Courses/routes.js";
 import ModulesRoutes from "./Kambaz/Modules/routes.js";
 import AssignmentsRoutes from "./Kambaz/Assignments/routes.js";
 import EnrollmentsRoutes from "./Kambaz/Enrollments/routes.js";
+import QuizzesRoutes from "./Kambaz/Quizzes/routes.js";
 
 const app = express();
 app.set("trust proxy", 1);
 
-// CORS
 const allowedOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:3000",
@@ -37,7 +36,6 @@ app.use(
   })
 );
 
-// Session
 const isProd = process.env.SERVER_ENV !== "development";
 
 const sessionOptions = {
@@ -78,3 +76,4 @@ CourseRoutes(app);
 ModulesRoutes(app);
 AssignmentsRoutes(app);
 EnrollmentsRoutes(app); 
+QuizzesRoutes(app);
